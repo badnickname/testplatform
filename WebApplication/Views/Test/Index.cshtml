@@ -1,0 +1,64 @@
+﻿@using WebApplication.Model.Data
+@{
+    Layout = "_Layout";
+    var test = (Test) ViewData["test"];
+    var asks = ViewData["tAsks"] as List<Ask>;
+    var answers = ViewData["tAnswers"] as List<Answer>;
+    var allow = (bool) ViewData["tAllow"];
+}
+
+<div class="container text-center">
+    <h2>@test.Name</h2>
+    @{
+        if (test.Tries > 0)
+        {
+            <div><b>Количество попыток:</b> @ViewData["tries"] из @test.Tries</div>
+        }
+        else
+        {
+            <div>Количество попыток неограничено</div>
+        }
+    }
+    <div><b>Описание:</b> @test.Info</div>
+</div>
+<div class="container">
+    <h3>Вопросы: </h3>
+    @{
+            if (allow)
+            {
+                <form action="/Test/Send" method="post">
+                    @{
+                        var j = 0;
+                        foreach (var ask in asks)
+                        {
+                            <div>
+                                <span><hr/><br>@ask.Value</span>
+                                @{
+                                    if (ask.Photo != null)
+                                    {
+                                        <div><img style='width:500px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(ask.Photo))"/></div>
+                                    }
+                                    
+                                    foreach (var answ in answers.Where(answ => answ.AskId == ask.Id))
+                                    {
+                                        <input type="text" name="AskId[@j]" hidden="hidden" value="@ask.Id"/>
+                                        <div><label><input name="AnswerId[@j]" type="radio" value="@answ.Id"/> @answ.Value</label></div>
+                                    }
+                                }
+                            </div>
+                            
+                            // inc counter
+                            j += 1;
+                        }
+                    }
+                    <br/>
+                    <hr/>
+                    <input class="btn btn-dark" type="submit" value="Отправить"/>
+                </form>
+            }
+            else
+            {
+                <div>Вам недоступен этот тест</div>
+            }
+        }
+</div>

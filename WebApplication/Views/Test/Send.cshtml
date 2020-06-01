@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "_Layout";
+    var error = (bool)ViewData["error"];
+}
+
+<div class="container">
+    @{
+        if (error)
+        {
+            <div class="text-center">Произошла ошибка!</div>
+        }
+        else
+        {
+            var resultText = ViewData["rText"] as string;
+            var result = (int)ViewData["res"];
+            var resultMax = (int) ViewData["maxres"];
+            
+            <div class="text-center">Вы набрали @result из @resultMax
+                <br>@resultText</div>
+        }
+    }
+</div>

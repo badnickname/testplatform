@@ -1,0 +1,34 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+
+@{
+    if (!ViewBag.Completed)
+    {
+        <div class="container">
+            <form action="../Home/register">
+                <h2>Регистрация</h2>
+                <div>Имя пользователя:<br> <input type="text" name="usr" autocomplete="false"/></div>
+                <div>Пароль:<br> <input type="password" name="pss" autocomplete="false"/></div>
+                <div>E-Mail:<br> <input type="text" name="mail" autocomplete="false"/></div>
+                <input class="btn btn-dark" type="submit"/>
+            </form>
+        </div>
+    }
+    else
+    {
+        if (ViewBag.Successfull)
+        {
+            <div class="container">
+                На почту @ViewBag.Mail отправлено письмо! Пройдите по ссылке для активации аккаунта
+            </div>
+        }
+        else
+        {
+            <div class="container">
+                Произошла ошибка при регистрации!
+            </div>
+        }
+    }
+}

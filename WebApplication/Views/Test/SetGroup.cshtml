@@ -1,0 +1,19 @@
+﻿@using WebApplication.Model.Data
+@{
+    Layout = "_Layout";
+    
+    var groups = ViewData["groups"] as List<Group>;
+    var tst = ViewData["test"] as Test;
+
+    if (groups.Count < 1)
+    {
+        <div>Ничего не найдено</div>
+    }
+    else
+    {
+        foreach (var g in groups)
+        {
+            <div>-&nbsp<a href="/Test/SetGroup?id=@tst.Id&gid=@g.Id">@g.Name</a>&nbsp|&nbsp(<a href="/Group/Index?gid=@g.Id" target="_blank">Посмотреть</a>)</div>
+        }
+    }
+}

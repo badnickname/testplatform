@@ -1,0 +1,32 @@
+﻿@using WebApplication.Model.Data
+@{
+    Layout = "_Layout";
+    var user = (User) ViewData["user"];
+    var groups = (IEnumerable<Group>) ViewData["groups"];
+}
+
+<div class="row">
+    <div class="col">
+        <h2>@user.Name</h2>
+        <br/>
+        @{
+            if (user.Photo == null)
+            {
+                <img style='width:100px;' src="/nophoto.png"/>
+            }
+            else
+            {
+                <img style='width:100px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(user.Photo))"/>
+            }
+        }
+    </div>
+    <div class="col">
+        <h4><b>Группы пользователя: </b></h4>
+        @{
+            foreach (var g in groups)
+            {
+                <div>- <a href="/Group/Index?gid=@g.Id">@g.Name</a></div>
+            }
+        }
+    </div>
+</div>

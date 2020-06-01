@@ -1,0 +1,27 @@
+﻿@using WebApplication.Model.Data
+
+@{
+    Layout = "_Layout";
+}
+
+@{
+    if (ViewBag.Groups == null)
+    {
+        <div>Некорректный запрос</div>
+    }
+    else
+    {
+        var list = (List<Group>) ViewBag.Groups;
+        if (list.Count < 1)
+        {
+            <div>Ничего не найдено</div>
+        }
+        else
+        {
+            foreach (var g in list)
+            {
+                <div>-&nbsp<a href="/Group/Index?gid=@g.Id">@g.Name</a></div>
+            }
+        }
+    }
+}

@@ -1,0 +1,185 @@
+﻿@using WebApplication.Model
+@using WebApplication.Model.Data
+@{
+    var context = DatabaseWrapper.Context;
+    
+    Layout = "_Layout";
+    var test = ViewData["test"] as Test;
+    var asks = ViewData["asks"] as IEnumerable<Ask>;
+    var descrs = ViewData["descrs"] as List<ResultDescription>;
+    var results = ViewData["results"] as List<Result>;
+}
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+
+function saveDescr(id) {
+    var descr = $('#descr-'+id).val();
+    var minv = $('#minv-'+id).val();
+    
+	$.ajax ({
+		url: "/Test/EditDescription",
+		method: "POST",
+		data: ({id: id, descr: descr, minv: minv}),
+		//dataType: "html",
+		beforeSend: function() {
+			//$("#inf").text("waiting for...");
+		}
+		/*success: function() {
+		    alert("success");
+			//$("#inf").text("done");
+		}*/
+	});
+}
+
+function removeDescr(id) {
+    $('#field-'+id).hide();
+	$.ajax ({
+		url: "/Test/RemoveDescription",
+		method: "POST",
+		data: ({id: id}),
+	});
+}
+
+</script>
+
+<div class="row">
+    <div class="col">
+        <div class="container">
+            <h4>Настройки</h4>
+                    <form action="/Test/Create" method="get">
+                        <input type="text" hidden="hidden" name="id" value="@test.Id"/>
+                        <div>Название теста: </div>
+                        <input type="text" name="name" value="@test.Name" autocomplete="false"/><br/>
+                        <div>Описание теста: </div>
+                        <textarea name="text">@test.Info</textarea><br/>
+                        <div>Количество попыток (0 - неограниченно): </div>
+                        <input type="number" name="tries" value="@test.Tries"><br/>
+                        <div>Сохранять результаты
+                            @{
+                                if (test.SaveResults > 0)
+                                {
+                                    <input type="checkbox" checked name="saveres"/>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="saveres"/>
+                                }
+                            }
+                        </div><br/>
+                        <div>Сделать тест активным
+                            @{
+                                if (test.Show > 0)
+                                {
+                                    <input type="checkbox" checked name="show"/>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="show"/>
+                                }
+                            }
+                        </div><br/>
+                        <input class="btn btn-dark" type="submit" value="Сохранить"/>
+                    </form>
+        </div>
+        <br/><hr/><br/>
+        <div class="container">
+            <h4>Список вопросов: </h4>
+            @{
+                foreach (var ask in asks)
+                {
+                    <div>- @ask.Value&nbsp|&nbsp<a href="/Ask/Index?id=@ask.Id">Изменить</a>&nbsp|&nbsp<a href="/Ask/Remove?id=@ask.Id">Удалить</a></div>
+                }
+                <br/><div><a href="/Ask/Create?tid=@test.Id">Добавить вопрос</a></div>
+            }
+        </div>
+        <br/><hr/><br/>
+        <div class="container">
+            <h4>Описание результатов: </h4>
+            @{
+                if (descrs.Count < 1)
+                {
+                    <div>Описаний нет</div>
+                }
+                else
+                {
+                    foreach (var descr in descrs)
+                    {
+                        <div id="field-@descr.Id">
+                            <!--<form action="/Test/EditDescription" method="get">-->
+                                <input type="number" hidden="hidden" name="id" value="@descr.Id"/>
+                                Описание: <input type="text" id="descr-@descr.Id" name="descr" value="@descr.Text"/> от
+                                <input type="number" style="width: 40px" id="minv-@descr.Id" name="minv" value="@descr.MinValue"/>
+                                <!--<input class="btn btn-dark" type="submit" value="Сохранить"/>-->
+                            <!--</form>--><br>
+                            <button class="btn btn-light" onclick="saveDescr(@descr.Id)">Сохранить</button> <button class="btn btn-light" onclick="removeDescr(@descr.Id)">Удалить</button>
+                            <!--<form action="/Test/RemoveDescription" method="get">
+                                <input type="text" hidden="hidden" name="id" value="@descr.Id"/>
+                                <input class="btn btn-dark" type="submit" value="Удалить"/>
+                            </form>-->
+                        </div>
+                    }
+                }
+
+                <br/><div><a href="/Test/AddDescription?tid=@test.Id">Добавить описание</a></div>
+            }
+        </div>
+    </div>
+    
+    <div class="col">
+        <div class="container">
+            <h4>Доступ</h4>
+                    @{
+                        if ((string)ViewData["groupname"] != "")
+                        {
+                            <div>Тест доступен для группы @ViewData["groupname"]</div>
+                        }
+                    }
+                    <div><br/>Сделать тест доступным только для группы...</div>
+                    <form action="/Test/SetGroup" method="get">
+                        <input type="text" hidden="hidden" name="id" value="@test.Id"/>
+                        <div>Название группы: <input type="text" name="gname" value="" autocomplete="false"/></div>
+                        <input class="btn btn-dark" type="submit" value="Найти"/>
+                    </form>
+            
+                    <div class="container">
+                        <a href="/Test/SetGroup?id=@test.Id&gid=0">Сделать тест общедоступным</a>
+                    </div><br/><br/>
+                    
+                    <div>
+                        @{
+                            if (test.Photo == null)
+                            {
+                                <img style='width:100px;' src="/nophoto.png"/>
+                            }
+                            else
+                            {
+                                <img style='width:100px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(test.Photo))"/>
+                            }
+                        }
+                        
+                        <form action="/Test/LoadPhoto" method="post" enctype="multipart/form-data">
+                            <input type="text" name="Id" hidden="hidden" value="@test.Id"/>
+                            <label>Изменить фото </label><input class="btn btn-light" name="Image" type="file"/> <input class="btn btn-dark" type="submit" value="Загрузить"/>
+                        </form>
+                    </div>
+                    
+                    <br/><hr/>
+                    <h4>Результаты пользователей</h4>
+                    @{
+                        if (results.Count < 1)
+                        {
+                            <div>Никто не прошел тест или сохранение результатов отключено</div>
+                        }
+                        else
+                        {
+                            foreach (var r in results)
+                            {
+                                var usr = context.Users.First(i => i.Id == r.UserId);
+                                <div>-&nbsp<a href="/User/Index?id=@r.UserId">@usr.Name</a>&nbsp| @r.Value</div>
+                            }
+                        }
+                    }
+        </div>
+    </div>
+</div>

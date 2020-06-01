@@ -1,0 +1,57 @@
+﻿@using WebApplication.Model.Data
+@{
+    Layout = "_Layout";
+    var users = (List<User>) ViewData["gUsers"];
+    var needReg = (int) ViewData["needReg"];
+    var gid = (int) ViewData["gid"];
+    var tests = ViewData["tests"] as List<Test>;
+}
+
+<h2>@ViewData["gName"]</h2>
+<hr/>
+
+@{
+    switch (needReg)
+    {
+        case 1:
+        {
+            <form action="../Group/Login">
+                <input type="text" hidden="hidden" name="gid" value="@gid"/>
+                <div>Пароль:<br> <input type="password" name="pass" value="" autocomplete="false"/></div>
+                <input class="btn btn-dark" value="Войти в группу" type="submit"/>
+            </form>
+            break;
+        }
+        case 2:
+        {
+            <div><a href="/Group/KickSelf?gid=@gid">Покинуть группу</a></div>
+            break;
+        }
+        default:
+        {
+            <div>Вы не состоите в группе</div>
+            break;
+        }
+    }
+}
+
+<div class="row">
+    <div class="col">
+        <div><b>Пользователи:</b></div>
+        @{
+            foreach (var u in users)
+            {
+                <div>- <a href="/User/Index?id=@u.Id">@u.Name</a></div>
+            }
+        }
+    </div>
+    <div class="col">
+            <div><b>Тесты:</b></div>
+            @{
+                foreach (var t in tests)
+                {
+                    <div>- <a href="/Test/Index?id=@t.Id">@t.Name</a></div>
+                }
+            }
+        </div>
+</div>

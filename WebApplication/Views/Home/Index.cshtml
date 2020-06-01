@@ -1,0 +1,44 @@
+﻿@using WebApplication.Model.Data
+@{
+    Layout = "_Layout";
+    var tests = ViewData["Tests"] as List<Test>;
+
+    <br/>
+    <div class = "container-lg">
+        @{
+            for (var i = 0; i < 27 && i < tests.Count; i += 3)
+            {
+                <br/>
+                <div class="row">
+                    @{
+                        for (var j = 0; j < 3; j++)
+                        {
+                            if (i + j >= tests.Count)
+                            {
+                                <div class="col"></div>
+                                continue;
+                            }
+                            
+                            <div class="col">
+                                <div align=center>
+                                    <a href="/Test/Index?id=@tests[i+j].Id">
+                                    @{
+                                        if (tests[i+j].Photo == null)
+                                        {
+                                            <img style='width:200px;' src="/nophoto.png"/>
+                                        }
+                                        else
+                                        {
+                                            <img style='width:200px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(tests[i+j].Photo))"/>
+                                        }
+                                    }
+                                    <br>@tests[i+j].Name</a>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+}

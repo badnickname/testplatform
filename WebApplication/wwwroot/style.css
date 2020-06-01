@@ -1,0 +1,14 @@
+.header {
+    background-color: #628a8f;
+    color: #FFF;
+    font-size: 30px;
+}
+
+.header a {
+    color: #fff; /* Цвет ссылки */
+}
+
+.d-flex{
+    font-size: 18px;
+    background-color: #456073;
+}

@@ -1,0 +1,89 @@
+﻿@using WebApplication.Model.Data
+@{
+    Layout = "_Layout";
+    var ask = ViewData["ask"] as Ask;
+    var answers = ViewData["answers"] as List<Answer>;
+}
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+
+function saveAnswer(id) {
+    var value = $('#value-'+id).val();
+    var impact = $('#impact-'+id).val();
+    
+	$.ajax ({
+		url: "/Ask/AnswerEdit",
+		method: "POST",
+		data: ({id: id, value: value, impact: impact}),
+		//dataType: "html",
+		beforeSend: function() {
+			//$("#inf").text("waiting for...");
+		}
+		/*success: function() {
+		    alert("success");
+			//$("#inf").text("done");
+		}*/
+	});
+}
+
+function removeAnswer(id) {
+    $('#field-'+id).hide();
+	$.ajax ({
+		url: "/Ask/AnswerRemove",
+		method: "POST",
+		data: ({id: id}),
+	});
+}
+
+</script>
+
+<div class="container">
+    <h4>Вопрос</h4>
+    <form action="/Ask/Edit" method="get">
+        <input type="text" hidden="hidden" name="id" value="@ask.Id"/>
+        <textarea name="value">@ask.Value</textarea><br/>
+        <input type="submit"  class="btn btn-dark" value="Сохранить"/>
+    </form>
+    <br/>
+    <hr/>
+    
+    <h4>Изображение</h4>
+    <form action="/Ask/LoadPhoto" method="post" enctype="multipart/form-data">
+        <input type="text" hidden="hidden" name="id" value="@ask.Id"/>
+        <label>Изменить фото </label><input name="Image" class="btn btn-light" type="file"/> <input type="submit" class="btn btn-dark" value="Загрузить"/>
+    </form>
+    @{
+        if (ask.Photo != null)
+        {
+            <div><a href="/Ask/RemovePhoto?id=@ask.Id">Удалить изображение</a></div>
+        }
+    }
+    
+    <br/>
+    <hr/>
+    <h4>Варианты ответа</h4>
+    @{
+        if (answers.Count < 1)
+        {
+            <div>Необходимо добавить варианты</div>
+        }
+        else
+        {
+            foreach (var a in answers)
+            {
+                <p id = "field-@a.Id">
+                        <input type="text" hidden="hidden" name="id" value="@a.Id"/>
+                        <input id="value-@a.Id" type="text" name="value" value="@a.Value"/>
+                        <input id="impact-@a.Id" type="number" style="width: 40px" name="impact" value="@a.Impact"/>
+                        <!--<input type="submit" value="Сохранить"/>-->
+                    <button class="btn btn-light" onclick="saveAnswer(@a.Id)">Сохранить</button>
+                    <button class="btn btn-light" onclick="removeAnswer(@a.Id)">Удалить</button>
+                </p>
+            }
+        }
+        <div><a href="/Ask/AnswerAdd?id=@ask.Id">Добавить вариант ответа</a></div>
+    }
+    <hr/>
+    <div><a href="/Test/Create?id=@ask.TestId">Вернуться к тесту</a></div>
+</div>

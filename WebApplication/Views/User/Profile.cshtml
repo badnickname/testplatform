@@ -1,0 +1,72 @@
+﻿@using WebApplication.Model
+@using WebApplication.Model.Data
+@{
+    var context = DatabaseWrapper.Context;
+    Layout = "_Layout";
+
+    var usr = context.Users.First(i => i.Name == (string) ViewData["Name"] && i.Pass == (string) ViewData["Password"]);
+    var tests = ViewData["Tests"] as List<Test>;
+}
+
+<div class="row">
+    <div class="col">
+        <div class = "container">
+            @{
+                if (usr.Photo == null)
+                {
+                    <img style='width:100px;' src="/nophoto.png"/>
+                }
+                else
+                {
+                    <img style='width:100px;' src="data:image/jpeg;base64,@(Convert.ToBase64String(usr.Photo))"/>
+                }
+                        
+                <form action="/User/LoadAvatar" method="post" enctype="multipart/form-data">
+                    <label>Изменить фото </label><input name="Image" type="file"/> <input type="submit" value="Загрузить"/>
+                    </form>
+            }
+            <br/>
+            <h4><b>Имя:</b> @usr.Name</h4>
+            <h4><b>E-Mail:</b> @usr.Mail</h4><br>
+        </div>
+    </div>
+    <div class="col">
+        <div class="container">
+            <h4>Группы&nbsp|&nbsp<a href="/Group/Create">Создать</a>&nbsp</h4>
+            @{
+                var groupList = context.GroupsList.Where(i => i.UserId == usr.Id);
+                List<GroupList> glist = new List<GroupList>();
+                foreach (var g in groupList)
+                {
+                    glist.Add(g);
+                }
+            
+                foreach (var record in glist)
+                {
+                    var group = context.Groups.First(i => i.Id == record.GroupId);
+                    <div>
+                        -&nbsp<a href="/Group/Index?gid=@group.Id">@group.Name</a>&nbsp
+                        @{
+                            if (record.Owner > 0)
+                            {
+                                <span>|&nbsp<a href="/Group/Create?gid=@group.Id">Управление</a>&nbsp|&nbsp<a href="/Group/Remove?gid=@group.Id">Удалить</a></span>
+                            }
+                        }
+                    </div>
+                }
+            }
+            <br/>
+            <form action="/Group/Find" method="get"><input name="name" type="text"/><input type="submit" value="Найти"/></form><br/>
+        </div>
+        <hr/>
+        <div class="container">
+            <h4>Тесты&nbsp|&nbsp<a href="/Test/Create">Создать</a>&nbsp </h4>
+            @{
+                foreach (var t in tests)
+                {
+                    <div>-&nbsp<a href="/Test/Index?id=@t.Id">@t.Name</a>&nbsp|&nbsp<a href="/Test/Create?id=@t.Id">Управление</a>&nbsp|&nbsp<a href="/Test/Remove?id=@t.Id">Удалить</a></div>
+                }
+            }
+        </div>
+    </div>
+</div>
