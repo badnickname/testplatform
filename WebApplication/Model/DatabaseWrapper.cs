@@ -164,5 +164,10 @@ namespace WebApplication.Model
         {
             return Get(Context.Users, f);
         }
+
+        public static string MakeSafe(this string str)
+        {
+            return str.Replace("<", "&lt;").Replace(">", "&gt;");
+        }
     }
 }

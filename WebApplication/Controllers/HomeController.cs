@@ -43,8 +43,8 @@ namespace WebApplication.Controllers
             ViewBag.Mail = Request.Query["mail"];
                 
             Regex mail = new Regex("^.+@.+[.].+$");
-            string name = SessionController.TrimName(Request.Query["usr"]);
-            string email = Request.Query["mail"];
+            string name = SessionController.TrimName(Request.Query["usr"]).MakeSafe();
+            string email = ((string)Request.Query["mail"]).MakeSafe();
             string pass = Request.Query["pss"];
             if (pass != null && email != null && name != null &&
                 mail.IsMatch(ViewBag.Mail) && UserList.Add(name, email, pass))

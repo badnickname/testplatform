@@ -70,7 +70,7 @@ namespace WebApplication.Controllers
                 if(Request.Query.ContainsKey("name") && Request.Query.ContainsKey("pass")) {
                     var newname = SessionController.TrimName(Request.Query["name"]);
                     var newpass = (string)Request.Query["pass"];
-                    group.Name = newname;
+                    group.Name = newname.MakeSafe();
                     group.Pass = newpass;
                 
                     context.Groups.Update(group);

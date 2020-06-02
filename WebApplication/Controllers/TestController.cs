@@ -84,11 +84,14 @@ namespace WebApplication.Controllers
             var tst = context.Tests.First(i => i.Id == id && i.OwnerId == userData.Id);
             
             var changed = false;
-            if (Request.Query.ContainsKey("name")) { tst.Name = Request.Query["name"]; changed = true; }
-            if (Request.Query.ContainsKey("text")) { tst.Info = Request.Query["text"]; changed = true; }
+            if (Request.Query.ContainsKey("name")) { tst.Name = ((string)Request.Query["name"]).MakeSafe(); changed = true; }
+            if (Request.Query.ContainsKey("text")) { tst.Info = ((string)Request.Query["text"]).MakeSafe(); changed = true; }
             if (Request.Query.ContainsKey("tries")) { tst.SaveResults = 1; tst.Tries = int.Parse(Request.Query["tries"]); changed = true; }
-            tst.SaveResults = Request.Query.ContainsKey("saveres") ? 1 : 0;
-            tst.Show = Request.Query.ContainsKey("show") ? 1 : 0;
+            if (Request.Query.ContainsKey("name"))
+            {
+                tst.SaveResults = Request.Query.ContainsKey("saveres") ? 1 : 0;
+                tst.Show = Request.Query.ContainsKey("show") ? 1 : 0;
+            }
 
             if (changed)
             {
@@ -234,7 +237,7 @@ namespace WebApplication.Controllers
             if(context.Tests.Count(i=>i.OwnerId == userData.Id && i.Id == resdescr.TestId) < 1) 
                 return Redirect($"/Test/Create?id={resdescr.TestId}");
 
-            resdescr.Text = descr;
+            resdescr.Text = descr.MakeSafe();
             resdescr.MinValue = minv;
             context.Descriptions.Update(resdescr);
             context.SaveChanges();

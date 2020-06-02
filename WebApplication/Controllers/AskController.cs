@@ -122,7 +122,7 @@ namespace WebApplication.Controllers
                 return Redirect("/Home/Index");
 
             answer.Impact = impact;
-            answer.Value = value;
+            answer.Value = value.MakeSafe();
             context.Answers.Update(answer);
             context.SaveChanges();
             
