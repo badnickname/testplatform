@@ -3,8 +3,8 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using WebApplication.Controllers;
-using WebApplication.Model;
-using WebApplication.Model.Data.Collections;
+using WebApplication.Database;
+using WebApplication.Models.Collections;
 
 namespace TestProject
 {

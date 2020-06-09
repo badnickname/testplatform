@@ -2,9 +2,10 @@
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication.Controllers.Register;
-using WebApplication.Model;
-using WebApplication.Model.Data;
+using WebApplication.Database;
+using WebApplication.Database.Register;
+using WebApplication.Database.Utility;
+using WebApplication.Models;
 
 namespace WebApplication.Controllers
 {

@@ -1,4 +1,4 @@
-﻿namespace WebApplication.Model
+﻿namespace WebApplication.Database
 {
     public static class ContextBuilder
     {

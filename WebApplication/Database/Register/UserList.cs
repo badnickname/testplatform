@@ -5,10 +5,8 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
-using WebApplication.Model;
-using WebApplication.Modules.Register;
 
-namespace WebApplication.Controllers.Register
+namespace WebApplication.Database.Register
 {
     public static class UserList
     {
@@ -68,7 +66,7 @@ namespace WebApplication.Controllers.Register
                 if (usr == null) return false;
                 Users.Remove(usr);
 
-                var entity = new Model.Data.User
+                var entity = new Models.User
                 {
                     Name = usr.name,
                     Mail = usr.mail,

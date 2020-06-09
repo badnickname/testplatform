@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebApplication.Model;
-using WebApplication.Modules.Register;
 
-namespace WebApplication.Controllers.Register
+namespace WebApplication.Database.Register
 {
     public static class SessionList
     {

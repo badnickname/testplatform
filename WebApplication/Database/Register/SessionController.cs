@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication.Controllers.Register;
-using WebApplication.Model;
+using WebApplication.Controllers;
+using WebApplication.Database.Utility;
 
-namespace WebApplication.Controllers
+namespace WebApplication.Database.Register
 {
     public static class SessionController
     {

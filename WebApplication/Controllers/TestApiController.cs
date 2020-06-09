@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using WebApplication.Controllers.Register;
-using WebApplication.Model;
-using WebApplication.Model.Data.Collections;
-using WebApplication.Modules.Register;
+using WebApplication.Database;
+using WebApplication.Database.Register;
+using WebApplication.Models.Collections;
 
 namespace WebApplication.Controllers
 {

@@ -1,4 +1,4 @@
-﻿namespace WebApplication.Model.Data.Collections
+﻿namespace WebApplication.Models.Collections
 {
     public class ResultContent
     {

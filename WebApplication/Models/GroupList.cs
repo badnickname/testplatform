@@ -1,4 +1,4 @@
-﻿namespace WebApplication.Model.Data
+﻿namespace WebApplication.Models
 {
     public class GroupList
     {

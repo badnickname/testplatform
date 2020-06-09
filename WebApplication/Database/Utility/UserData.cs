@@ -1,4 +1,4 @@
-﻿namespace WebApplication.Controllers
+﻿namespace WebApplication.Database.Utility
 {
     public struct UserData
     {

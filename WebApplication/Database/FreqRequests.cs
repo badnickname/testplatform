@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using WebApplication.Model.Data;
-using WebApplication.Model.Data.Collections;
+using WebApplication.Models;
+using WebApplication.Models.Collections;
 
-namespace WebApplication.Model
+namespace WebApplication.Database
 {
     public class FreqRequests
     {

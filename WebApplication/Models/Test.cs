@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebApplication.Model.Data
+namespace WebApplication.Models
 {
     public class Test
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace WebApplication.Controllers
+namespace WebApplication.Database.Utility
 {
     public class ImageData
     {

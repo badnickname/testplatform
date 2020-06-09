@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WebApplication.Model.Data;
+using WebApplication.Models;
 
-namespace WebApplication.Model
+namespace WebApplication.Database
 {
     public sealed class ApplicationContext : DbContext
     {
