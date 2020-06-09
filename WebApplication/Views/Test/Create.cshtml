@@ -1,7 +1,7 @@
 ﻿@using WebApplication.Model
 @using WebApplication.Model.Data
 @{
-    var context = DatabaseWrapper.Context;
+    var context = ContextBuilder.Context;
     
     Layout = "_Layout";
     var test = ViewData["test"] as Test;

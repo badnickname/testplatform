@@ -46,7 +46,7 @@ namespace WebApplication.Controllers.Register
         
         public static bool Add(string name, string mail, string pass)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var count = Users.Count(i => i.name.Equals(name));
             var countDb = context.Users.Count(i => i.Name.Equals(name));
             if (count != 0 || countDb != 0) return false;
@@ -61,7 +61,7 @@ namespace WebApplication.Controllers.Register
 
         public static bool Confirm(string hash)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             try
             {
                 var usr = Users.First(i => i.code == hash);

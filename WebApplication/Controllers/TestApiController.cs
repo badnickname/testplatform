@@ -17,7 +17,7 @@ namespace WebApplication.Controllers
             {
                 var usrData = new List<Session>(SessionList.Sessions.Where(i => i.Name == user && i.Key == sessionkey));
                 var uid = usrData.Count > 0 ? usrData.First().Id : -1;
-                var test = DatabaseWrapper.GetTestContent(id, uid);
+                var test = FreqRequests.GetTestContent(id, uid);
                 return test;
             }
             catch
@@ -33,7 +33,7 @@ namespace WebApplication.Controllers
             {
                 var usrData = new List<Session>(SessionList.Sessions.Where(i => i.Name == user && i.Key == sessionkey));
                 var uid = usrData.Count > 0 ? usrData.First().Id : -1;
-                var result = DatabaseWrapper.GetResultContent(tid, AskId, AnswerId, uid);
+                var result = FreqRequests.GetResultContent(tid, AskId, AnswerId, uid);
                 return result;
             }
             catch

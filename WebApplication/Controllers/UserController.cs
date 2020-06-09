@@ -13,7 +13,7 @@ namespace WebApplication.Controllers
         // GET
         public IActionResult Profile()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var user = SessionController.GetUserName(this);
             
             if (!Request.Cookies.ContainsKey("Name")) return Redirect("/Home/Index");
@@ -35,7 +35,7 @@ namespace WebApplication.Controllers
         [HttpPost]
         public IActionResult LoadAvatar(ImageData imageData)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             if (imageData.Image == null) return Redirect("/User/Profile");
 
             byte[] data = null;
@@ -56,7 +56,7 @@ namespace WebApplication.Controllers
 
         public IActionResult Index()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             SessionController.GetUserName(this);
             if (!Request.Query.ContainsKey("id")) return Redirect("/User/Profile");
 

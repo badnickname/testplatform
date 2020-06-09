@@ -19,7 +19,7 @@ namespace WebApplication.Controllers.Register
         
         public static string AddSession(string name, string pass)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             StopSession(name, "");
             
             try
@@ -45,7 +45,7 @@ namespace WebApplication.Controllers.Register
 
         public static string GetPassword(string name, string code)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             
             try
             {

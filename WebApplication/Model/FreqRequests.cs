@@ -7,29 +7,11 @@ using WebApplication.Model.Data.Collections;
 
 namespace WebApplication.Model
 {
-    public static class DatabaseWrapper
+    public class FreqRequests
     {
-        private static ApplicationContext _context;
-        private static string _ip, _user, _pass, _database;
-
-        public static ApplicationContext Context
-        {
-            get => new ApplicationContext(_ip, _user, _pass, _database);
-            private set => _context = value;
-        }
-
-        public static void Init(string ip, string user, string pass, string database)
-        {
-            _ip = ip;
-            _user = user;
-            _pass = pass;
-            _database = database;
-            Context = new ApplicationContext(ip, user, pass, database, true);
-        }
-
         public static TestContent GetTestContent(int id, int uid)
         {
-            var context = Context;
+            using var context = ContextBuilder.Context;
             var test = context.Tests.First(i => i.Id == id);
 
             // Проверка доступности
@@ -50,10 +32,10 @@ namespace WebApplication.Model
                     Value = ask.Value,
                     Answers = answers.Where(i=>i.AskId == ask.Id)
                         .Select(answer => new AnswerContent
-                    {
-                        Id = answer.Id,
-                        Value = answer.Value
-                    }).ToArray()
+                        {
+                            Id = answer.Id,
+                            Value = answer.Value
+                        }).ToArray()
                 }).ToArray();
 
             return new TestContent {Asks = askContents, Description = test.Info, Id = test.Id, Name = test.Name};
@@ -61,7 +43,7 @@ namespace WebApplication.Model
 
         public static ResultContent GetResultContent(int tid, int[] AskId, int[] AnswerId, int uid)
         {
-            var context = Context;
+            using var context = ContextBuilder.Context;
             var test = context.Tests.First(i => i.Id == tid);
             
             // Проверка доступности
@@ -127,47 +109,42 @@ namespace WebApplication.Model
 
         public static List<Answer> GetAnswer(Func<Answer, bool> f)
         {
-            return Get(Context.Answers, f);
+            return Get(ContextBuilder.Context.Answers, f);
         }
         
         public static List<Ask> GetAsk(Func<Ask, bool> f)
         {
-            return Get(Context.Asks, f);
+            return Get(ContextBuilder.Context.Asks, f);
         }
         
         public static List<Group> GetGroup(Func<Group, bool> f)
         {
-            return Get(Context.Groups, f);
+            return Get(ContextBuilder.Context.Groups, f);
         }
         
         public static List<GroupList> GetGroupList(Func<GroupList, bool> f)
         {
-            return Get(Context.GroupsList, f);
+            return Get(ContextBuilder.Context.GroupsList, f);
         }
         
         public static List<Result> GetResult(Func<Result, bool> f)
         {
-            return Get(Context.Results, f);
+            return Get(ContextBuilder.Context.Results, f);
         }
         
         public static List<ResultDescription> GetResultDescription(Func<ResultDescription, bool> f)
         {
-            return Get(Context.Descriptions, f);
+            return Get(ContextBuilder.Context.Descriptions, f);
         }
         
         public static List<Test> GetResultDescription(Func<Test, bool> f)
         {
-            return Get(Context.Tests, f);
+            return Get(ContextBuilder.Context.Tests, f);
         }
         
         public static List<User> GetUser(Func<User, bool> f)
         {
-            return Get(Context.Users, f);
-        }
-
-        public static string MakeSafe(this string str)
-        {
-            return str.Replace("<", "&lt;").Replace(">", "&gt;");
+            return Get(ContextBuilder.Context.Users, f);
         }
     }
 }

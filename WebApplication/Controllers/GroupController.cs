@@ -12,7 +12,7 @@ namespace WebApplication.Controllers
         // GET
         public IActionResult Remove()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             UserData userData = SessionController.GetUserName(this);
             if (userData.Id<0 || !Request.Query.ContainsKey("gid")) return Redirect("/Home/Index");
             
@@ -32,7 +32,7 @@ namespace WebApplication.Controllers
 
         public IActionResult Create()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             SessionController.GetNotStrongName(this);
             ViewData["Title"] = "Редактирование группы";
             
@@ -87,7 +87,7 @@ namespace WebApplication.Controllers
 
         public IActionResult Find()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             SessionController.GetNotStrongName(this);
             ViewData["Title"] = "Поиск группы";
             
@@ -102,7 +102,7 @@ namespace WebApplication.Controllers
 
         public IActionResult Index()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             SessionController.GetNotStrongName(this);
             
             if (!Request.Query.ContainsKey("gid")) return Redirect("/Home/Index");
@@ -140,7 +140,7 @@ namespace WebApplication.Controllers
 
         public IActionResult Login()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             
@@ -165,7 +165,7 @@ namespace WebApplication.Controllers
         
         public IActionResult Kick()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             
@@ -186,7 +186,7 @@ namespace WebApplication.Controllers
 
         public IActionResult KickSelf()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             try
             {
                 var userData = SessionController.GetUserName(this);

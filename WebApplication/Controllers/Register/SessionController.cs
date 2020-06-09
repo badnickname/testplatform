@@ -15,7 +15,7 @@ namespace WebApplication.Controllers
         }
         public static UserData GetUserName(Controller ctxtController)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var name = ctxtController.Request.Cookies["Name"];
             var code = ctxtController.Request.Cookies["SessionKey"];
             try

@@ -13,7 +13,7 @@ namespace WebApplication.Controllers
     {
         public IActionResult Index()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             SessionController.GetUserName(this);
             ViewData["Title"] = "Главная страница";
 

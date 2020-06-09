@@ -12,7 +12,7 @@ namespace WebApplication
     {
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
-            DatabaseWrapper.Init(configuration["Settings:IP"],configuration["Settings:User"], configuration["Settings:Pass"],configuration["Settings:Database"]);
+            ContextBuilder.Init(configuration["Settings:IP"],configuration["Settings:User"], configuration["Settings:Pass"],configuration["Settings:Database"]);
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.

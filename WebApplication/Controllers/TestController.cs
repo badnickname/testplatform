@@ -14,7 +14,7 @@ namespace WebApplication.Controllers
         // GET
         public IActionResult Index()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             var id = int.Parse(Request.Query["id"]);
             var test = context.Tests.First(i => i.Id == id);
@@ -53,7 +53,7 @@ namespace WebApplication.Controllers
 
         public IActionResult Create()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             ViewData["Title"] = "Редактирование теста";
             
             var userData = SessionController.GetUserName(this);
@@ -121,7 +121,7 @@ namespace WebApplication.Controllers
 
         public IActionResult SetGroup()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             ViewData["Title"] = "Сделать доступным для группы...";
             
             var userData = SessionController.GetUserName(this);
@@ -155,7 +155,7 @@ namespace WebApplication.Controllers
         [HttpPost]
         public IActionResult LoadPhoto(ImageData imageData, string Id)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
 
@@ -180,7 +180,7 @@ namespace WebApplication.Controllers
 
         public IActionResult Remove()
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             
@@ -196,7 +196,7 @@ namespace WebApplication.Controllers
         [HttpGet]
         public IActionResult AddDescription(int tid)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             
@@ -212,7 +212,7 @@ namespace WebApplication.Controllers
         [HttpPost]
         public IActionResult RemoveDescription(int id)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
 
@@ -229,7 +229,7 @@ namespace WebApplication.Controllers
         [HttpPost]
         public IActionResult EditDescription(int id, string descr, int minv)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
 
@@ -248,7 +248,7 @@ namespace WebApplication.Controllers
         [HttpPost]
         public IActionResult Send(int[] AskId, int[] AnswerId)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             ViewData["error"] = true;
             ViewData["Title"] = "Результаты тестирования";
             

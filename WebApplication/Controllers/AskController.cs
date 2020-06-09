@@ -12,7 +12,7 @@ namespace WebApplication.Controllers
         [HttpGet]
         public IActionResult Edit(int id, string value)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             
             // Проверка на доступность пользователю
             var userData = SessionController.GetUserName(this);
@@ -31,7 +31,7 @@ namespace WebApplication.Controllers
         [HttpGet]
         public IActionResult Index(int id)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             
             // Проверка на доступность пользователю
             var userData = SessionController.GetUserName(this);
@@ -50,7 +50,7 @@ namespace WebApplication.Controllers
         [HttpGet]
         public IActionResult Create(int tid)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
 
@@ -65,7 +65,7 @@ namespace WebApplication.Controllers
         [HttpGet]
         public IActionResult Remove(int id)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var ask = context.Asks.First(i => i.Id == id);
@@ -81,7 +81,7 @@ namespace WebApplication.Controllers
         [HttpGet]
         public IActionResult AnswerAdd(int id)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var ask = context.Asks.First(i => i.Id == id);
@@ -98,7 +98,7 @@ namespace WebApplication.Controllers
         [HttpPost]
         public IActionResult AnswerRemove(int id)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var answer = context.Answers.First(i => i.Id == id);
@@ -114,7 +114,7 @@ namespace WebApplication.Controllers
         [HttpPost]
         public IActionResult AnswerEdit(int id, string value, int impact)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var answer = context.Answers.First(i => i.Id == id);
@@ -132,7 +132,7 @@ namespace WebApplication.Controllers
         [HttpPost]
         public IActionResult LoadPhoto(ImageData imageData, int id)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var ask = context.Asks.First(i => i.Id == id);
@@ -157,7 +157,7 @@ namespace WebApplication.Controllers
         [HttpGet]
         public IActionResult RemovePhoto(int id)
         {
-            var context = DatabaseWrapper.Context;
+            var context = ContextBuilder.Context;
             var userData = SessionController.GetUserName(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var ask = context.Asks.First(i => i.Id == id);
