@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using WebApplication.Models;
 
 namespace WebApplication.Database
 {
-    public sealed class ApplicationContext : DbContext
+    public sealed class ApplicationContext : DbContext, ICloneable
     {
         private readonly string _ip;
         private readonly string _user;
@@ -32,6 +33,11 @@ namespace WebApplication.Database
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySql($"server={_ip};UserId={_user};Password={_pass};database={_database};");
+        }
+        
+        public object Clone()
+        {
+            return new ApplicationContext(_ip, _user, _pass, _database);
         }
     }
 }
