@@ -1,4 +1,4 @@
-﻿namespace WebApplication.Database.Register
+﻿namespace WebApplication.Database.Session
 {
     public class Session
     {

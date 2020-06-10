@@ -1,14 +1,25 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using WebApplication.Database.Register;
 using WebApplication.Database.Utility;
 
-namespace WebApplication.Database.Register
+namespace WebApplication.Database.Session
 {
     public static class SessionKeeper
     {
+        private static readonly SessionList SessionList = new SessionList();
+
         public static UserData Get(Controller context, bool safe = true)
         {
             return safe ? SafeSession(context) : UnsafeSession(context);
+        }
+        
+        public static UserData Get(string name, string code)
+        {
+            var usrData = new List<Database.Session.Session>(SessionList.Sessions.Where(i => i.Name == name && i.Key == code));
+            var usr = usrData.Count > 0 ? usrData.First() : null;
+            return usr != null ? new UserData {Id = usr.Id, Name = name} : UserData.Empty;
         }
         
         private static UserData UnsafeSession(Controller context)
@@ -35,6 +46,16 @@ namespace WebApplication.Database.Register
                 ctxtController.Response.Cookies.Delete("SessionKey");
                 return UserData.Empty;
             }
+        }
+
+        public static void StopSession(string name, string code)
+        {
+            SessionList.StopSession(name, code);
+        }
+
+        public static string AddSession(string name, string pass)
+        {
+            return SessionList.AddSession(name, pass);
         }
 
         public static void Logout(Controller context)

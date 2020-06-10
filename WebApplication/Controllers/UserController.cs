@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Database;
 using WebApplication.Database.Register;
+using WebApplication.Database.Session;
 using WebApplication.Database.Utility;
 using WebApplication.Models;
 
@@ -18,13 +19,12 @@ namespace WebApplication.Controllers
             var user = SessionKeeper.Get(this);
             
             if (!Request.Cookies.ContainsKey("Name")) return Redirect("/Home/Index");
-            var pass = SessionList.GetPassword(Request.Cookies["Name"], Request.Cookies["SessionKey"]);
-            if (pass == null)
+            if (user.Id < 0)
             {
                 return Redirect("/Home/Index");
             }
             
-            ViewData["Password"] = pass;
+            ViewData["Password"] = user.Password;
             ViewData["HideBar"] = true;
             
             ViewData["Title"] = $"Профиль пользователя {Request.Cookies["Name"]}";
@@ -45,8 +45,10 @@ namespace WebApplication.Controllers
                 data = binaryReader.ReadBytes((int)imageData.Image.Length);
             }
 
-            string name = Request.Cookies["Name"];
-            string pass = SessionList.GetPassword(Request.Cookies["Name"], Request.Cookies["SessionKey"]);
+            var userdata = SessionKeeper.Get(this);
+
+            var name = userdata.Name;
+            var pass = userdata.Password;
             var usr = context.Users.First(i => i.Name == name && i.Pass == pass);
             usr.Photo = data;
             context.Users.Update(usr);

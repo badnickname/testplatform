@@ -5,16 +5,33 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace WebApplication.Database.Register
 {
-    public static class UserList
+    public static class UserKeeper
     {
         private static readonly List<User> Users = new List<User>();
+        private static MailSender _mailSender;
+        public static void Init(IConfiguration mail)
+        {
+            _mailSender = new MailSender
+            {
+                Body = mail["Mail:Body"],
+                From = mail["Mail:From"],
+                Title = mail["Mail:Title"],
+                Port = int.Parse(mail["Mail:Port"]),
+                Host = mail["Mail:Host"],
+                UserName = mail["Mail:UserName"],
+                Password = mail["Mail:Password"],
+                Address = mail["Mail:Address"],
+                DisplayName = mail["Mail:DisplayName"]
+            };
+        }
 
         private static string GenerateCode()
         {
-            Random rnd = new Random();
+            var rnd = new Random();
             var g = rnd.Next(0, 100000);
             var md5Hash = MD5.Create();
             var data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(g.ToString()));
@@ -23,36 +40,17 @@ namespace WebApplication.Database.Register
             return g.ToString();
         }
 
-        private static void SendMail(string mail, string code)
-        {
-            var from = new MailAddress("dtestprojectmail@mail.ru", "Online-Testing");
-            var to = new MailAddress(mail);
-            var m = new MailMessage(from, to)
-            {
-                Subject = "Регистрация на сайте",
-                IsBodyHtml = true,
-                Body = $"Для продолжения регистрации пройдите по ссылке: " +
-                       $"<a href=https://localhost:5001/Home/ConfirmRegister?code={code}>https://localhost:5001/Home/ConfirmRegister?code={code}</a>"
-            };
-
-            var smtp = new SmtpClient("smtp.mail.ru", 25)
-            {
-                Credentials = new NetworkCredential("dtestprojectmail", "xLREskH28hL8EmT"), EnableSsl = true
-            };
-            smtp.Send(m);
-        }
-        
         public static bool Add(string name, string mail, string pass)
         {
             var context = ContextBuilder.Context;
-            var count = Users.Count(i => i.name.Equals(name));
+            var count = Users.Count(i => i.Name.Equals(name));
             var countDb = context.Users.Count(i => i.Name.Equals(name));
             if (count != 0 || countDb != 0) return false;
 
             var code = GenerateCode();
             var usr = new User(name, pass, mail, code);
             Users.Add(usr);
-            SendMail(mail, code);
+            _mailSender.Send(mail, code);
             return true;
 
         }
@@ -62,15 +60,15 @@ namespace WebApplication.Database.Register
             var context = ContextBuilder.Context;
             try
             {
-                var usr = Users.First(i => i.code == hash);
+                var usr = Users.First(i => i.Code == hash);
                 if (usr == null) return false;
                 Users.Remove(usr);
 
                 var entity = new Models.User
                 {
-                    Name = usr.name,
-                    Mail = usr.mail,
-                    Pass = usr.pass
+                    Name = usr.Name,
+                    Mail = usr.Mail,
+                    Pass = usr.Pass
                 };
                 context.Users.Add(entity);
                 context.SaveChanges();

@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Database;
 using WebApplication.Database.Register;
+using WebApplication.Database.Session;
 using WebApplication.Database.Utility;
 using WebApplication.Models;
 
@@ -37,7 +38,7 @@ namespace WebApplication.Controllers
             string email = ((string)Request.Query["mail"]).MakeSafe();
             string pass = Request.Query["pss"];
             if (pass != null && email != null && name != null &&
-                mail.IsMatch(ViewBag.Mail) && UserList.Add(name, email, pass))
+                mail.IsMatch(ViewBag.Mail) && UserKeeper.Add(name, email, pass))
             {
                 ViewBag.Successfull = true;
             }
@@ -58,7 +59,7 @@ namespace WebApplication.Controllers
                 return View();
             }
 
-            ViewBag.Successfull = UserList.Confirm(code);
+            ViewBag.Successfull = UserKeeper.Confirm(code);
             return View();
         }
         
@@ -73,7 +74,7 @@ namespace WebApplication.Controllers
                 return View();
             }
 
-            var code = SessionList.AddSession(name, pass);
+            var code = SessionKeeper.AddSession(name, pass);
             if(code != null) {
                 Response.Cookies.Append("Name", name);
                 Response.Cookies.Append("SessionKey", code);
@@ -98,7 +99,7 @@ namespace WebApplication.Controllers
                 return Redirect("/Home/Index");
             }
             
-            SessionList.StopSession(name, code);
+            SessionKeeper.StopSession(name, code);
             return Redirect("/Home/Index");
         }
     }

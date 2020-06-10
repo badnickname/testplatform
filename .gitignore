@@ -3,6 +3,7 @@ TestProject/bin/
 TestProject/obj/
 WebApplication/bin/
 WebApplication/obj/
+*/mailsettings.json
 
 TestProject/appsettings.json
 WebApplication/appsettings.json

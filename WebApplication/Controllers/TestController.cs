@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Database;
 using WebApplication.Database.Register;
+using WebApplication.Database.Session;
 using WebApplication.Database.Utility;
 using WebApplication.Models;
 

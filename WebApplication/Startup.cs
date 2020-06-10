@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApplication.Database;
+using WebApplication.Database.Register;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebApplication
@@ -13,6 +14,9 @@ namespace WebApplication
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             ContextBuilder.Init(configuration["Settings:IP"],configuration["Settings:User"], configuration["Settings:Pass"],configuration["Settings:Database"]);
+            var builder = new ConfigurationBuilder().AddJsonFile("mailsettings.json");
+            var mail = builder.Build();
+            UserKeeper.Init(mail);
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
