@@ -16,7 +16,7 @@ namespace WebApplication
             ContextBuilder.Init(configuration["Settings:IP"],configuration["Settings:User"], configuration["Settings:Pass"],configuration["Settings:Database"]);
             var builder = new ConfigurationBuilder().AddJsonFile("mailsettings.json");
             var mail = builder.Build();
-            UserKeeper.Init(mail);
+            Registrator.Init(mail);
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.

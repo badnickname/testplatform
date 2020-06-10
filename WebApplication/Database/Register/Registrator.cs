@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 
 namespace WebApplication.Database.Register
 {
-    public static class UserKeeper
+    public static class Registrator
     {
         private static readonly List<User> Users = new List<User>();
         private static MailSender _mailSender;
@@ -29,20 +27,9 @@ namespace WebApplication.Database.Register
             };
         }
 
-        private static string GenerateCode()
-        {
-            var rnd = new Random();
-            var g = rnd.Next(0, 100000);
-            var md5Hash = MD5.Create();
-            var data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(g.ToString()));
-            var hash = Encoding.Default.GetString(data);
-
-            return g.ToString();
-        }
-
         public static bool Add(string name, string mail, string pass)
         {
-            var context = ContextBuilder.Context;
+            using var context = ContextBuilder.Context;
             var count = Users.Count(i => i.Name.Equals(name));
             var countDb = context.Users.Count(i => i.Name.Equals(name));
             if (count != 0 || countDb != 0) return false;
@@ -57,7 +44,7 @@ namespace WebApplication.Database.Register
 
         public static bool Confirm(string hash)
         {
-            var context = ContextBuilder.Context;
+            using var context = ContextBuilder.Context;
             try
             {
                 var usr = Users.First(i => i.Code == hash);
@@ -78,6 +65,16 @@ namespace WebApplication.Database.Register
             {
                 return false;
             }
+        }
+        
+        private static string GenerateCode()
+        {
+            var rnd = new Random();
+            var g = rnd.Next(0, 100000);
+            var md5Hash = MD5.Create();
+            var data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(g.ToString()));
+
+            return g.ToString();
         }
     }
 }

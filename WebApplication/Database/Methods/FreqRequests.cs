@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication.Models;
 using WebApplication.Models.Collections;
 
-namespace WebApplication.Database
+namespace WebApplication.Database.Methods
 {
     public class FreqRequests
     {

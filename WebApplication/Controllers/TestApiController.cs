@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
-using WebApplication.Database;
-using WebApplication.Database.Register;
+﻿using System.Web.Http;
+using WebApplication.Database.Methods;
 using WebApplication.Database.Session;
-using WebApplication.Database.Utility;
 using WebApplication.Models.Collections;
 
 namespace WebApplication.Controllers

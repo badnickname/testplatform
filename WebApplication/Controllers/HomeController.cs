@@ -38,7 +38,7 @@ namespace WebApplication.Controllers
             string email = ((string)Request.Query["mail"]).MakeSafe();
             string pass = Request.Query["pss"];
             if (pass != null && email != null && name != null &&
-                mail.IsMatch(ViewBag.Mail) && UserKeeper.Add(name, email, pass))
+                mail.IsMatch(ViewBag.Mail) && Registrator.Add(name, email, pass))
             {
                 ViewBag.Successfull = true;
             }
@@ -59,7 +59,7 @@ namespace WebApplication.Controllers
                 return View();
             }
 
-            ViewBag.Successfull = UserKeeper.Confirm(code);
+            ViewBag.Successfull = Registrator.Confirm(code);
             return View();
         }
         
