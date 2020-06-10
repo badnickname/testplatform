@@ -1,18 +1,23 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication.Controllers;
 using WebApplication.Database.Utility;
 
 namespace WebApplication.Database.Register
 {
-    public static class SessionController
+    public static class SessionKeeper
     {
-        public static void GetNotStrongName(Controller context)
+        public static UserData Get(Controller context, bool safe = true)
         {
-            string name = context.Request.Cookies["Name"];
-            context.ViewData["Name"] = name;
+            return safe ? SafeSession(context) : UnsafeSession(context);
         }
-        public static UserData GetUserName(Controller ctxtController)
+        
+        private static UserData UnsafeSession(Controller context)
+        {
+            var name = context.Request.Cookies["Name"];
+            context.ViewData["Name"] = name;
+            return UserData.Empty;
+        }
+        private static UserData SafeSession(Controller ctxtController)
         {
             var context = ContextBuilder.Context;
             var name = ctxtController.Request.Cookies["Name"];
@@ -30,15 +35,6 @@ namespace WebApplication.Database.Register
                 ctxtController.Response.Cookies.Delete("SessionKey");
                 return UserData.Empty;
             }
-        }
-
-        public static string TrimName(string name)
-        {
-            name = name.Trim();
-            name = name.Replace("<", "");
-            name = name.Replace(">", "");
-            if (name.Length < 1) name = "0";
-            return name;
         }
 
         public static void Logout(Controller context)

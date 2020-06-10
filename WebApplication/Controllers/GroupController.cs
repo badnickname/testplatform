@@ -15,7 +15,7 @@ namespace WebApplication.Controllers
         public IActionResult Remove()
         {
             var context = ContextBuilder.Context;
-            UserData userData = SessionController.GetUserName(this);
+            UserData userData = SessionKeeper.Get(this);
             if (userData.Id<0 || !Request.Query.ContainsKey("gid")) return Redirect("/Home/Index");
             
             int.TryParse(Request.Query["gid"], out var gid);
@@ -35,10 +35,10 @@ namespace WebApplication.Controllers
         public IActionResult Create()
         {
             var context = ContextBuilder.Context;
-            SessionController.GetNotStrongName(this);
+            SessionKeeper.Get(this, false);
             ViewData["Title"] = "Редактирование группы";
             
-            UserData userData = SessionController.GetUserName(this);
+            UserData userData = SessionKeeper.Get(this);
             if (!Request.Query.ContainsKey("gid"))
             {
                 ViewData["Title"] = "Создание группы";
@@ -70,7 +70,7 @@ namespace WebApplication.Controllers
                 
                 // Изменение полей при запросе
                 if(Request.Query.ContainsKey("name") && Request.Query.ContainsKey("pass")) {
-                    var newname = SessionController.TrimName(Request.Query["name"]);
+                    var newname = StringExpansion.TrimName(Request.Query["name"]);
                     var newpass = (string)Request.Query["pass"];
                     group.Name = newname.MakeSafe();
                     group.Pass = newpass;
@@ -90,7 +90,7 @@ namespace WebApplication.Controllers
         public IActionResult Find()
         {
             var context = ContextBuilder.Context;
-            SessionController.GetNotStrongName(this);
+            SessionKeeper.Get(this, false);
             ViewData["Title"] = "Поиск группы";
             
             ViewBag.Groups = null;
@@ -105,7 +105,7 @@ namespace WebApplication.Controllers
         public IActionResult Index()
         {
             var context = ContextBuilder.Context;
-            SessionController.GetNotStrongName(this);
+            SessionKeeper.Get(this, false);
             
             if (!Request.Query.ContainsKey("gid")) return Redirect("/Home/Index");
             var gid = int.Parse(Request.Query["gid"]);
@@ -143,7 +143,7 @@ namespace WebApplication.Controllers
         public IActionResult Login()
         {
             var context = ContextBuilder.Context;
-            var userData = SessionController.GetUserName(this);
+            var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             
             var gid = int.Parse(Request.Query["gid"]);
@@ -168,7 +168,7 @@ namespace WebApplication.Controllers
         public IActionResult Kick()
         {
             var context = ContextBuilder.Context;
-            var userData = SessionController.GetUserName(this);
+            var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             
             var gid = int.Parse(Request.Query["gid"]);
@@ -191,7 +191,7 @@ namespace WebApplication.Controllers
             var context = ContextBuilder.Context;
             try
             {
-                var userData = SessionController.GetUserName(this);
+                var userData = SessionKeeper.Get(this);
                 if (userData.Id < 0) return Redirect("/Home/Index");
 
                 var gid = int.Parse(Request.Query["gid"]);

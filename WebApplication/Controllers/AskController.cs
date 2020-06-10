@@ -17,7 +17,7 @@ namespace WebApplication.Controllers
             var context = ContextBuilder.Context;
             
             // Проверка на доступность пользователю
-            var userData = SessionController.GetUserName(this);
+            var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var ask = context.Asks.First(i => i.Id == id);
             if (context.Tests.Count(i => i.Id == ask.TestId && i.OwnerId == userData.Id) < 1)
@@ -36,7 +36,7 @@ namespace WebApplication.Controllers
             var context = ContextBuilder.Context;
             
             // Проверка на доступность пользователю
-            var userData = SessionController.GetUserName(this);
+            var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var ask = context.Asks.First(i => i.Id == id);
             if (context.Tests.Count(i => i.Id == ask.TestId && i.OwnerId == userData.Id) < 1)
@@ -53,7 +53,7 @@ namespace WebApplication.Controllers
         public IActionResult Create(int tid)
         {
             var context = ContextBuilder.Context;
-            var userData = SessionController.GetUserName(this);
+            var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
 
             var test = context.Tests.First(i => i.Id == tid && i.OwnerId == userData.Id);
@@ -68,7 +68,7 @@ namespace WebApplication.Controllers
         public IActionResult Remove(int id)
         {
             var context = ContextBuilder.Context;
-            var userData = SessionController.GetUserName(this);
+            var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var ask = context.Asks.First(i => i.Id == id);
             if (context.Tests.Count(i => i.Id == ask.TestId && i.OwnerId == userData.Id) < 1)
@@ -84,7 +84,7 @@ namespace WebApplication.Controllers
         public IActionResult AnswerAdd(int id)
         {
             var context = ContextBuilder.Context;
-            var userData = SessionController.GetUserName(this);
+            var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var ask = context.Asks.First(i => i.Id == id);
             if (context.Tests.Count(i => i.Id == ask.TestId && i.OwnerId == userData.Id) < 1)
@@ -101,7 +101,7 @@ namespace WebApplication.Controllers
         public IActionResult AnswerRemove(int id)
         {
             var context = ContextBuilder.Context;
-            var userData = SessionController.GetUserName(this);
+            var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var answer = context.Answers.First(i => i.Id == id);
             if (context.Tests.Count(i => i.Id == answer.TestId && i.OwnerId == userData.Id) < 1)
@@ -117,7 +117,7 @@ namespace WebApplication.Controllers
         public IActionResult AnswerEdit(int id, string value, int impact)
         {
             var context = ContextBuilder.Context;
-            var userData = SessionController.GetUserName(this);
+            var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var answer = context.Answers.First(i => i.Id == id);
             if (context.Tests.Count(i => i.Id == answer.TestId && i.OwnerId == userData.Id) < 1)
@@ -135,7 +135,7 @@ namespace WebApplication.Controllers
         public IActionResult LoadPhoto(ImageData imageData, int id)
         {
             var context = ContextBuilder.Context;
-            var userData = SessionController.GetUserName(this);
+            var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var ask = context.Asks.First(i => i.Id == id);
             if (context.Tests.Count(i => i.Id == ask.TestId && i.OwnerId == userData.Id) < 1)
@@ -160,7 +160,7 @@ namespace WebApplication.Controllers
         public IActionResult RemovePhoto(int id)
         {
             var context = ContextBuilder.Context;
-            var userData = SessionController.GetUserName(this);
+            var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             var ask = context.Asks.First(i => i.Id == id);
             if (context.Tests.Count(i => i.Id == ask.TestId && i.OwnerId == userData.Id) < 1)

@@ -1,7 +1,10 @@
 ﻿@using WebApplication.Models
+@model List<Test>
 @{
+    ViewData["Title"] = "Главная страница";
+    
     Layout = "_Layout";
-    var tests = ViewData["Tests"] as List<Test>;
+    var tests = Model;
 
     <br/>
     <div class = "container-lg">

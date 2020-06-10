@@ -5,31 +5,21 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Database;
 using WebApplication.Database.Register;
+using WebApplication.Database.Utility;
 using WebApplication.Models;
 
 namespace WebApplication.Controllers
 {
     public class HomeController : Controller
     {
+        private const int MainTestsCount = 26;
         public IActionResult Index()
         {
-            var context = ContextBuilder.Context;
-            SessionController.GetUserName(this);
-            ViewData["Title"] = "Главная страница";
-
-            var tests = new List<Test>();
-            var records = context.Tests.Where(i=> i.Show > 0);
-            int i = 0;
-            foreach (var r in records)
-            {
-                if (i == 26) break;
-                tests.Add(r);
-                i++;
-            }
-
-            ViewData["Tests"] = tests;
+            SessionKeeper.Get(this);
+            using var context = ContextBuilder.Context;
+            var tests = new List<Test>(context.Tests.Where(r=> r.Show > 0).Take(MainTestsCount));
             
-            return View();
+            return View(tests);
         }
 
         public IActionResult Register()
@@ -43,7 +33,7 @@ namespace WebApplication.Controllers
             ViewBag.Mail = Request.Query["mail"];
                 
             Regex mail = new Regex("^.+@.+[.].+$");
-            string name = SessionController.TrimName(Request.Query["usr"]).MakeSafe();
+            string name = StringExpansion.TrimName(Request.Query["usr"]).MakeSafe();
             string email = ((string)Request.Query["mail"]).MakeSafe();
             string pass = Request.Query["pss"];
             if (pass != null && email != null && name != null &&

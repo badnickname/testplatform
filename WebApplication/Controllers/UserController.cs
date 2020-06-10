@@ -15,7 +15,7 @@ namespace WebApplication.Controllers
         public IActionResult Profile()
         {
             var context = ContextBuilder.Context;
-            var user = SessionController.GetUserName(this);
+            var user = SessionKeeper.Get(this);
             
             if (!Request.Cookies.ContainsKey("Name")) return Redirect("/Home/Index");
             var pass = SessionList.GetPassword(Request.Cookies["Name"], Request.Cookies["SessionKey"]);
@@ -58,7 +58,7 @@ namespace WebApplication.Controllers
         public IActionResult Index()
         {
             var context = ContextBuilder.Context;
-            SessionController.GetUserName(this);
+            SessionKeeper.Get(this);
             if (!Request.Query.ContainsKey("id")) return Redirect("/User/Profile");
 
             var id = int.Parse(Request.Query["id"]);
