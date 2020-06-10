@@ -6,7 +6,7 @@ namespace WebApplication.Database.Session
 {
     public class SessionList
     {
-        public readonly List<Database.Session.Session> Sessions = new List<Database.Session.Session>();
+        public readonly List<Session> Sessions = new List<Session>();
 
         private string GenerateCode()
         {
@@ -25,7 +25,7 @@ namespace WebApplication.Database.Session
                 var usr = context.Users.First(i => i.Name == name && i.Pass == pass);
 
                 var code = GenerateCode();
-                Sessions.Add(new Database.Session.Session {Id = usr.Id, Key = code, Name = usr.Name});
+                Sessions.Add(new Session {Id = usr.Id, Key = code, Name = usr.Name});
 
                 return code;
             }
@@ -43,7 +43,7 @@ namespace WebApplication.Database.Session
 
         public string GetPassword(string name, string code)
         {
-            var context = ContextBuilder.Context;
+            using var context = ContextBuilder.Context;
             
             try
             {

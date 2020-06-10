@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication.Database.Register;
 using WebApplication.Database.Utility;
 
 namespace WebApplication.Database.Session
@@ -17,9 +16,10 @@ namespace WebApplication.Database.Session
         
         public static UserData Get(string name, string code)
         {
-            var usrData = new List<Database.Session.Session>(SessionList.Sessions.Where(i => i.Name == name && i.Key == code));
+            var usrData = new List<Session>(SessionList.Sessions.Where(i => i.Name == name && i.Key == code));
             var usr = usrData.Count > 0 ? usrData.First() : null;
-            return usr != null ? new UserData {Id = usr.Id, Name = name} : UserData.Empty;
+            var password = SessionList.GetPassword(name, code);
+            return usr != null ? new UserData {Id = usr.Id, Name = name, Password = password} : UserData.Empty;
         }
         
         private static UserData UnsafeSession(Controller context)
