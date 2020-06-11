@@ -29,9 +29,8 @@ namespace WebApplication.Database.Session
 
                 return code;
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e.Message);
                 return null;
             }
         }
