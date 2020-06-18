@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,14 +14,10 @@ namespace WebApplication
     {
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
-            ContextBuilder.Init(configuration["Settings:IP"],configuration["Settings:User"], configuration["Settings:Pass"],configuration["Settings:Database"]);
-            var builder = new ConfigurationBuilder().AddJsonFile("mailsettings.json");
-            var mail = builder.Build();
-            Registrator.Init(mail);
+            Registrator.Init(configuration);
+            ContextBuilder.Init(configuration);
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews(options=>
@@ -33,13 +30,16 @@ namespace WebApplication
             services.AddSession();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             app.UseStaticFiles();
             app.UseStatusCodePages();
             app.UseMvcWithDefaultRoute();

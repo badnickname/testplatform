@@ -19,7 +19,7 @@ namespace TestProject
                 .AddJsonFile("appsettings.json")
                 .Build();
             Controller = new TestApiController();
-            ContextBuilder.Init(conf["Settings:IP"],conf["Settings:User"], conf["Settings:Pass"],conf["Settings:Database"]);
+            ContextBuilder.Init(conf);
         }
 
         [Test]

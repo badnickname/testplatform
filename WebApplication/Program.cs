@@ -1,4 +1,7 @@
+using System.IO;
+using System.Net;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace WebApplication
@@ -7,18 +10,20 @@ namespace WebApplication
     {
         public static void Main(string[] args)
         {
-            
-            CreateHostBuilder(args).Build().Run();
-            /*IWebHost host = new WebHostBuilder()
+            var host = new WebHostBuilder()
                 .UseKestrel(options =>
                 {
-                    options.ListenAnyIP(80);
+                    options.Listen(IPAddress.Any, 5000);
                 })
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
+                .ConfigureAppConfiguration(configurationBuilder => configurationBuilder
+                    .AddJsonFile("appsettings.json")
+                    .AddJsonFile("mailsettings.json")
+                )
                 .Build();
-            host.Run();*/
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

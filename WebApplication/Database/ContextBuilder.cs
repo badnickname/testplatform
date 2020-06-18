@@ -1,4 +1,6 @@
-﻿namespace WebApplication.Database
+﻿using Microsoft.Extensions.Configuration;
+
+namespace WebApplication.Database
 {
     public static class ContextBuilder
     {
@@ -10,9 +12,12 @@
             private set => _context = value;
         }
 
-        public static void Init(string ip, string user, string pass, string database)
+        public static void Init(IConfiguration configuration)
         {
-            Context = new ApplicationContext(ip, user, pass, database, true);
+            Context = new ApplicationContext(configuration["Settings:IP"],
+                configuration["Settings:User"],
+                configuration["Settings:Pass"], 
+                configuration["Settings:Database"], true);
         }
         
     }
