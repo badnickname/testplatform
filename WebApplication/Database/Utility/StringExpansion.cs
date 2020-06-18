@@ -7,7 +7,7 @@
             return str.Replace("<", "&lt;").Replace(">", "&gt;");
         }
         
-        public static string TrimName(string name)
+        public static string TrimName(this string name)
         {
             name = name.Trim();
             name = name.Replace("<", "");

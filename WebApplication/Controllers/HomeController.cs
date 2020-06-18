@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
@@ -23,22 +22,22 @@ namespace WebApplication.Controllers
             return View(tests);
         }
 
-        public IActionResult Register()
+        public IActionResult Register(string usr, string mail, string pss)
         {
-            ViewData["Title"] = "Регистрация";
-            ViewData["HideBar"] = true;
             ViewBag.Completed = false;
 
-            if (!Request.Query.ContainsKey("usr")) return View();
+            if (usr == null) return View();
             ViewBag.Successfull = false;
-            ViewBag.Mail = Request.Query["mail"];
+            ViewBag.Mail = mail;
                 
-            Regex mail = new Regex("^.+@.+[.].+$");
-            string name = StringExpansion.TrimName(Request.Query["usr"]).MakeSafe();
-            string email = ((string)Request.Query["mail"]).MakeSafe();
-            string pass = Request.Query["pss"];
-            if (pass != null && email != null && name != null &&
-                mail.IsMatch(ViewBag.Mail) && Registrator.Add(name, email, pass))
+            var mailRegex = new Regex("^.+@.+[.].+$");
+            usr = usr.TrimName().MakeSafe();
+            mail = mail.MakeSafe();
+            
+            // Add to Registrator list
+            if (pss != null && mail != null && usr != null &&
+                mailRegex.IsMatch(ViewBag.Mail) && 
+                Registrator.Add(usr, mail, pss))
             {
                 ViewBag.Successfull = true;
             }
@@ -48,11 +47,8 @@ namespace WebApplication.Controllers
             return View();
         }
 
-        public IActionResult ConfirmRegister()
+        public IActionResult ConfirmRegister(string code)
         {
-            ViewData["Title"] = "Подтверждение регистрации";
-            ViewData["HideBar"] = true;
-            string code = Request.Query["code"];
             if (code == null)
             {
                 ViewBag.Successfull = false;
@@ -63,12 +59,8 @@ namespace WebApplication.Controllers
             return View();
         }
         
-        public IActionResult Login()
+        public IActionResult Login(string name, string pass)
         {
-            ViewData["Title"] = "Вход в профиль";
-            ViewData["HideBar"] = true;
-            string name = Request.Query["name"];
-            string pass = Request.Query["pass"];
             if (pass == null || name == null)
             {
                 return View();
@@ -87,10 +79,8 @@ namespace WebApplication.Controllers
             return Redirect("/Home/Index");
         }
 
-        public IActionResult Logout()
+        public IActionResult Logout(string name, string code)
         {
-            var name = Request.Cookies["Name"];
-            var code = Request.Cookies["SessionKey"];
             Response.Cookies.Delete("Name");
             Response.Cookies.Delete("SessionKey");
 
