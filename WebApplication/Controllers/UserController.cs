@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Database;
-using WebApplication.Database.Register;
 using WebApplication.Database.Session;
 using WebApplication.Database.Utility;
 using WebApplication.Models;
@@ -57,20 +56,14 @@ namespace WebApplication.Controllers
             return Redirect("/User/Profile");
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? id)
         {
             var context = ContextBuilder.Context;
             SessionKeeper.Get(this);
-            if (!Request.Query.ContainsKey("id")) return Redirect("/User/Profile");
-
-            var id = int.Parse(Request.Query["id"]);
+            if (id is null) return Redirect("/User/Profile");
             var user = context.Users.First(i=>i.Id == id);
 
-            var groupslist = new List<GroupList>();
-            
-            var glist = context.GroupsList.Where(i => i.UserId == id);
-            groupslist.AddRange(glist);
-
+            var groupslist = new List<GroupList>(context.GroupsList.Where(i => i.UserId == id));
             var groups = groupslist.Select(g => context.Groups.First(i => i.Id == g.GroupId)).ToList();
 
             ViewData["user"] = user;

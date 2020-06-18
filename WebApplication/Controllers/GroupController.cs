@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Database;
-using WebApplication.Database.Register;
 using WebApplication.Database.Session;
 using WebApplication.Database.Utility;
 using WebApplication.Models;
@@ -13,38 +12,36 @@ namespace WebApplication.Controllers
     public class GroupController : Controller
     {
         // GET
-        public IActionResult Remove()
+        public IActionResult Remove(int? gid)
         {
-            var context = ContextBuilder.Context;
-            UserData userData = SessionKeeper.Get(this);
-            if (userData.Id<0 || !Request.Query.ContainsKey("gid")) return Redirect("/Home/Index");
+            using var context = ContextBuilder.Context;
+            var userData = SessionKeeper.Get(this);
+            if (userData.Id<0 || gid != null) return Redirect("/Home/Index");
             
-            int.TryParse(Request.Query["gid"], out var gid);
             var record = context.GroupsList.First(i => i.Id == gid);
-            if (record.Owner > 0)
-            {
-                var order0 = context.GroupsList.Where(i => i.GroupId == gid);
-                var order1 = context.Groups.Where(i => i.Id == gid);
-                foreach (var g in order0) context.GroupsList.Remove(g);
-                foreach (var g in order1) context.Groups.Remove(g);
-                context.SaveChanges();
-            }
+            if (record.Owner <= 0) return Redirect("/User/Profile");
+            
+            var order0 = context.GroupsList.Where(i => i.GroupId == gid);
+            var order1 = context.Groups.Where(i => i.Id == gid);
+            foreach (var g in order0) context.GroupsList.Remove(g);
+            foreach (var g in order1) context.Groups.Remove(g);
+            context.SaveChanges();
             
             return Redirect("/User/Profile");
         }
 
-        public IActionResult Create()
+        public IActionResult Create(int? gid, string name, string pass)
         {
-            var context = ContextBuilder.Context;
+            using var context = ContextBuilder.Context;
             SessionKeeper.Get(this, false);
             ViewData["Title"] = "Редактирование группы";
-            
-            UserData userData = SessionKeeper.Get(this);
-            if (!Request.Query.ContainsKey("gid"))
+
+            var userData = SessionKeeper.Get(this);
+            if (gid == null)
             {
                 ViewData["Title"] = "Создание группы";
                 
-                Random r = new Random();
+                var r = new Random();
                 var g = r.Next(0, 10000000).ToString();
                 context.Groups.Add(new Group{Name=g});
                 context.SaveChanges();
@@ -62,7 +59,6 @@ namespace WebApplication.Controllers
             }
             else
             {
-                var gid = int.Parse(Request.Query["gid"]);
                 var group = context.Groups.First(i => i.Id == gid);
 
                 var allowed =
@@ -70,11 +66,9 @@ namespace WebApplication.Controllers
                 if (allowed < 1) return Redirect("/Home/Index");
                 
                 // Изменение полей при запросе
-                if(Request.Query.ContainsKey("name") && Request.Query.ContainsKey("pass")) {
-                    var newname = StringExpansion.TrimName(Request.Query["name"]);
-                    var newpass = (string)Request.Query["pass"];
-                    group.Name = newname.MakeSafe();
-                    group.Pass = newpass;
+                if(name!=null && pass!=null) {
+                    group.Name = name.TrimName().MakeSafe();
+                    group.Pass = pass;
                 
                     context.Groups.Update(group);
                     context.SaveChanges();
@@ -88,28 +82,25 @@ namespace WebApplication.Controllers
             return View();
         }
 
-        public IActionResult Find()
+        public IActionResult Find(string name)
         {
-            var context = ContextBuilder.Context;
+            using var context = ContextBuilder.Context;
             SessionKeeper.Get(this, false);
-            ViewData["Title"] = "Поиск группы";
-            
+
             ViewBag.Groups = null;
-            if (!Request.Query.ContainsKey("name")) return View();
-            var records = context.Groups.Where(i => i.Name == (string)Request.Query["name"]);
-            var groups = new List<Group>();
-            foreach (var g in records) groups.Add(g);
+            if (name is null) return View();
+            
+            var groups = new List<Group>(context.Groups.Where(i => i.Name == name));
             ViewBag.Groups = groups;
             return View();
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? gid)
         {
-            var context = ContextBuilder.Context;
+            using var context = ContextBuilder.Context;
             SessionKeeper.Get(this, false);
             
-            if (!Request.Query.ContainsKey("gid")) return Redirect("/Home/Index");
-            var gid = int.Parse(Request.Query["gid"]);
+            if (gid is null) return Redirect("/Home/Index");
             var group = context.Groups.First(i => i.Id == gid);
 
             var needReg = 1;
@@ -124,10 +115,7 @@ namespace WebApplication.Controllers
                 needReg = 0;
             }
 
-            var urecords = context.GroupsList.Where(i => i.GroupId == gid);
-            var glists = new List<GroupList>();
-            glists.AddRange(urecords);
-
+            var glists = new List<GroupList>(context.GroupsList.Where(i => i.GroupId == gid));
             var users = glists.Select(u => context.Users.First(i => i.Id == u.UserId)).ToList();
             var tests = new List<Test>(context.Tests.Where(i => i.Limit == gid));
 
@@ -141,15 +129,12 @@ namespace WebApplication.Controllers
             return View();
         }
 
-        public IActionResult Login()
+        public IActionResult Login(int gid, string pass)
         {
-            var context = ContextBuilder.Context;
+            using var context = ContextBuilder.Context;
             var userData = SessionKeeper.Get(this);
             if (userData.Id < 0) return Redirect("/Home/Index");
             
-            var gid = int.Parse(Request.Query["gid"]);
-            var pass = (string)Request.Query["pass"];
-
             var count = context.Groups.Count(i => i.Id == gid && i.Pass == pass);
             if (count > 0)
             {
@@ -162,18 +147,14 @@ namespace WebApplication.Controllers
                 return Redirect($"/Group/Index?gid={gid}");
             }
             
-            ViewData["Title"] = "Регистрация в группе";
             return View();
         }
         
-        public IActionResult Kick()
+        public IActionResult Kick(int? gid, int usr)
         {
-            var context = ContextBuilder.Context;
+            using var context = ContextBuilder.Context;
             var userData = SessionKeeper.Get(this);
-            if (userData.Id < 0) return Redirect("/Home/Index");
-            
-            var gid = int.Parse(Request.Query["gid"]);
-            var usr = int.Parse(Request.Query["usr"]);
+            if (userData.Id < 0 || gid is null) return Redirect("/Home/Index");
 
             if(usr == userData.Id) return Redirect($"/Group/Create?gid={gid}");
             
@@ -187,15 +168,14 @@ namespace WebApplication.Controllers
             return Redirect($"/Group/Create?gid={gid}");
         }
 
-        public IActionResult KickSelf()
+        public IActionResult KickSelf(int gid)
         {
-            var context = ContextBuilder.Context;
+            using var context = ContextBuilder.Context;
             try
             {
                 var userData = SessionKeeper.Get(this);
                 if (userData.Id < 0) return Redirect("/Home/Index");
 
-                var gid = int.Parse(Request.Query["gid"]);
                 var record =
                     context.GroupsList.First(i => i.UserId == userData.Id && i.Owner < 1 && i.GroupId == gid);
                 context.GroupsList.Remove(record);
