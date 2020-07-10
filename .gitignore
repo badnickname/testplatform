@@ -1,12 +1,12 @@
-.idea/
-TestProject/bin/
-TestProject/obj/
-WebApplication/bin/
-WebApplication/obj/
-*/mailsettings.json
+Source/.idea
+Source/TestProject/bin
+Source/TestProject/obj
+Source/WebApplication/bin
+Source/WebApplication/obj
 
-TestProject/appsettings.json
-WebApplication/appsettings.json
+Source/WebApplication/mailsettings.json
+Source/WebApplication/appsettings.json
+Source/TestProject/appsettings.json
 
 *_i.c
 *_p.c
